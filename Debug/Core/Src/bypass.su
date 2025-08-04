@@ -1,0 +1,2 @@
+../Core/Src/bypass.c:8:6:enable_bypass	8	static
+../Core/Src/bypass.c:12:6:disable_bypass	8	static

@@ -1,0 +1,2 @@
+../Core/Src/at24c08c.c:6:6:EEPROM_WriteByte	5
+../Core/Src/at24c08c.c:44:9:EEPROM_ReadByte	3

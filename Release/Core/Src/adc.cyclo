@@ -1,0 +1,2 @@
+../Core/Src/adc.c:11:6:HAL_ADC_ConvCpltCallback	1
+../Core/Src/adc.c:22:6:adc_get_value	1

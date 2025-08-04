@@ -1,0 +1,6 @@
+../Core/Src/modbus.c:15:13:resetArray	16	static
+../Core/Src/modbus.c:19:6:modbus_send_data	16	static
+../Core/Src/modbus.c:25:6:modbus_respone_data	32	static
+../Core/Src/modbus.c:51:6:HAL_UARTEx_RxEventCallback	24	static
+../Core/Src/modbus.c:71:6:modbus_request_data	24	static
+../Core/Src/modbus.c:89:6:modbus_init	8	static
