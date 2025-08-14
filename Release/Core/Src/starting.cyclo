@@ -1,2 +1,2 @@
-../Core/Src/starting.c:11:6:Control_Init	1
-../Core/Src/starting.c:77:6:Control_Update	10
+../Core/Src/starting.c:21:6:Control_Init	1
+../Core/Src/starting.c:90:6:Control_Update	4

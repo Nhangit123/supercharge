@@ -36,8 +36,7 @@ Core/Src/starting.o: ../Core/Src/starting.c ../Core/Inc/staring.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/bypass.h ../Core/Inc/digital_PI_rI_V2.h ../Core/Inc/adc.h \
- ../Core/Inc/winform.h
+ ../Core/Inc/bypass.h
 ../Core/Inc/staring.h:
 ../Core/Inc/timmer.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -78,6 +77,3 @@ Core/Src/starting.o: ../Core/Src/starting.c ../Core/Inc/staring.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/bypass.h:
-../Core/Inc/digital_PI_rI_V2.h:
-../Core/Inc/adc.h:
-../Core/Inc/winform.h:

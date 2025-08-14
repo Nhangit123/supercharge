@@ -6,17 +6,24 @@
  */
 #include "adc.h"
 extern ADC_HandleTypeDef hadc1;
-extern uint32_t adc_value[4];
+extern uint16_t adc_value[4];
 extern double isense,voutsense,vinsense,vcbsense;
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-//	uint16_t isense = adc_value[0];
-//	uint16_t voutsense = adc_value[1];
-//	uint16_t vinsense = adc_value[2];
-	double isense = (((double)adc_value[0] / 65536.0f) * 3.3f - 2.5f) * 10.0f;
-	double voutsense = ((double)adc_value[0] / 65536.0f) * 3.3f  * 10.0f;
-	double vinsense = ((double)adc_value[0] / 65536.0f) * 3.3f  * 10.0f;
 
-	send_data_to_winform(isense, voutsense, vinsense, adc_value[4]);
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+    double v_adc0 = ((double)adc_value[0] / ADC_RES) * VREF;
+    double v_adc1 = ((double)adc_value[1] / ADC_RES) * VREF;
+    double v_adc2 = ((double)adc_value[2] / ADC_RES) * VREF;
+    double v_adc3 = ((double)adc_value[3] / ADC_RES) * VREF;
+
+    isense = (((1.38-v_adc0)/0.7+1.38)/3.3*4.3-2.5)*10 ;
+    voutsense = v_adc1*10 ;
+    vinsense  = v_adc2*10 ;
+    vcbsense  = v_adc3*10 ;
+
+    send_data_to_winform(isense, voutsense, vinsense, vcbsense);
+//    send_data_to_winform(adc_value[0], adc_value[1], adc_value[2], adc_value[2]);
 }
 
 void adc_get_value()

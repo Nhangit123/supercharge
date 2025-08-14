@@ -31,8 +31,11 @@
 #include"timmer.h"
 #include "adc.h"
 #include "winform.h"
-uint32_t adc_value[4];
+#include "staring.h"
+#include "bypass.h"
+uint16_t adc_value[4];
 double isense,voutsense,vinsense,vcbsense;
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -153,6 +156,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+  Control_Init();
   /* USER CODE BEGIN 2 */
 //TIM4->CCR4 = 20;
 //HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
@@ -168,12 +172,12 @@ int main(void)
 //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
 //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,0);
 //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,0);
-//  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,0);
-//  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+//  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
+//  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
 //  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,1);
 //  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
 
-//mosfet(0.3);
+//mosfet(0.95);
 
 //adc_get_value();
 //HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_0);
@@ -193,11 +197,10 @@ int main(void)
 //double D, uk_V, uk_Ib, I_SPb, Count, bf1, bf2, bf3;
 //
 //// Update control system
-//Control_Update(V_CB, V_Bat, Vref, Ib, &D, &uk_V, &uk_Ib,
-//              &I_SPb, &Count, &bf1, &bf2, &bf3);
+//Control_Update(0, 0, 24, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
 //
 // //Update PWM duty cycle
-//mosfet(D);
+//mosfet(0.95);
 //
 // //Add delay or wait for timer interrupt
 //delay_ns(500);  // Adjust based on your control frequency
@@ -208,6 +211,15 @@ int main(void)
 //HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_0);
 //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
 //HAL_Delay(1000);
+//  mosfet(0.95);
+//  enable_bypass();
+
+  double V_CB;
+  double V_Bat;
+  double Vref;
+  double Ib;
+  double D = 0;
+  		double uk_V, uk_Ib, I_SPb, Count, bf1, bf2, bf3;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -215,6 +227,29 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+//	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
+//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+//	  HAL_Delay(1);
+	  adc_get_value();
+	   V_CB = voutsense;
+	   V_Bat = vinsense;
+	  Vref = 24;  // Set your reference voltage
+	   Ib = isense;
+
+	  // Control variables
+
+
+	  // Update control system
+	  Control_Update(V_CB, V_Bat, Vref, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
+
+	   //Update PWM duty cycle
+	  mosfet(D);
+
+	   //Add delay or wait for timer interrupt
+	  delay_ns(500);  // Adjust based on your control frequency
 
     /* USER CODE BEGIN 3 */
   }
@@ -542,7 +577,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 0;
+  htim4.Init.Prescaler = 5-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 100-1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

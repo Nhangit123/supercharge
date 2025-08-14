@@ -7,11 +7,7 @@
 
 #ifndef INC_STARING_H_
 #define INC_STARING_H_
-void Control_Init(void);
-void Control_Update(double V_CB, double V_Bat, double Vref, double Ib,
-                    double* D, double* uk_V, double* uk_Ib,
-                   double* I_SPb, double* Count, double* bf1,
-                   double* bf2, double* bf3);
+
 
 #include <math.h>
 
@@ -70,7 +66,7 @@ typedef struct {
     double ek_b, ek_1_b, esk_b, esk_1_b;
     double iMax_b, iMin_b;
     double Tsb;    // Second sampling time
-} PI_I;
+} PI_Ib;
 
 typedef struct {
     double Kpc, Ksc, Kic, Tic, Dc;
@@ -92,21 +88,12 @@ typedef enum {
     TU_12_DEN_24V,
 	TU_24V_DEN_XV
 } SystemState;
-// Global variables
-extern Interleave iParas;
-extern Energy Eng;
-extern Conv convParas;
-extern Lowpass LP;
-extern PI_V PIVarV;
-extern PI_I PIVarIb;
-extern PI_Ic PIVarIc;
-extern Ratel RL;
-extern SystemState sysState;
+
 // Function prototypes
 void Control_Init(void);
-void Control_Update(double V_CB, double V_Bat, double Vref, double Ib,
-                    double* D, double* uk_V, double* uk_Ib,
-                   double* I_SPb, double* Count, double* bf1,
+void Control_Update(double V_CB, double V_Bat, double Vref, double Ib,double Ic,
+                    double* D,double* Dc, double* uk_V, double* uk_Ib,double* uk_Ic,
+                   double* I_SPb,double* I_SPc, double* Count, double* bf1,
                    double* bf2, double* bf3);
 
 #endif /* INC_STARING_H_ */

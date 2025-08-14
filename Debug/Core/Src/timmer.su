@@ -1,4 +1,4 @@
 ../Core/Src/timmer.c:9:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/timmer.c:36:6:mosfet	16	static
-../Core/Src/timmer.c:42:6:mosfet_stop	8	static
-../Core/Src/timmer.c:53:6:delay_ns	24	static
+../Core/Src/timmer.c:47:6:mosfet	16	static
+../Core/Src/timmer.c:53:6:mosfet_stop	8	static
+../Core/Src/timmer.c:64:6:delay_ns	24	static
