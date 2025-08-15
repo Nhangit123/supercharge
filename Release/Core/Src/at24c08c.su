@@ -1,2 +1,2 @@
-../Core/Src/at24c08c.c:6:6:EEPROM_WriteByte	24	static
-../Core/Src/at24c08c.c:44:9:EEPROM_ReadByte	32	static
+../Core/Src/at24c08c.c:11:6:EEPROM_WriteByte	16	static
+../Core/Src/at24c08c.c:25:9:EEPROM_ReadByte	32	static

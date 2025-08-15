@@ -104,7 +104,7 @@ void Control_Update(double V_CB, double V_Bat, double Vref, double Ib,double Ic,
             break;
 
         case TU_12_DEN_24V:
-        	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, 0);
+        	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, 1);
 //            RL.bf3 = Vref - V_CB;
 //
 //            // Rate limited update
@@ -160,15 +160,16 @@ void Control_Update(double V_CB, double V_Bat, double Vref, double Ib,double Ic,
 //            *bf3 = RL.bf3;
 //
 //            if(V_CB >= 24.0) {
-//            	HAL_Delay(3000);
-//                enable_bypass();  // Enable bypass if voltage too high
+////            	HAL_Delay(3000);
+////                enable_bypass();  // Enable bypass if voltage too high
 //                sysState = TU_24V_DEN_XV;
 //            }
 //            else {
-//                disable_bypass();
+////                disable_bypass();
 //            }
             break;
         case TU_24V_DEN_XV:
+        	enable_bypass();
 ////        	PI_IBM_2P_Outputs_wrapper_vip(Vref, V_CB, 0, 0, D, 0, 0);
 //            RL.bf3 = Vref - V_CB;
 //

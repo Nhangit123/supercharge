@@ -22,8 +22,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     vinsense  = v_adc2*10 ;
     vcbsense  = v_adc3*10 ;
 
-    send_data_to_winform(isense, voutsense, vinsense, vcbsense);
-//    send_data_to_winform(adc_value[0], adc_value[1], adc_value[2], adc_value[2]);
+//    send_data_to_winform(isense, voutsense, vinsense, vcbsense);
 }
 
 void adc_get_value()

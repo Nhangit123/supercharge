@@ -33,9 +33,14 @@
 #include "winform.h"
 #include "staring.h"
 #include "bypass.h"
+#include "at24c08c.h"
 uint16_t adc_value[4];
 double isense,voutsense,vinsense,vcbsense;
-
+uint8_t page_of_eeprom_to_write_isense = 0;
+uint8_t data_write_test_eeprom = 0;
+uint8_t data_read_test_eeprom;
+uint8_t page_read_test_eeprom = 0;
+uint8_t page_write_test_eeprom = 0;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,10 +63,13 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
+DMA_HandleTypeDef hdma_i2c1_tx;
+DMA_HandleTypeDef hdma_i2c1_rx;
 
 SPI_HandleTypeDef hspi3;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart7;
@@ -82,6 +90,7 @@ static void MX_SPI3_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_UART7_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -156,6 +165,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM1_Init();
   MX_UART7_Init();
+  MX_TIM2_Init();
   Control_Init();
   /* USER CODE BEGIN 2 */
 //TIM4->CCR4 = 20;
@@ -220,6 +230,7 @@ int main(void)
   double Ib;
   double D = 0;
   		double uk_V, uk_Ib, I_SPb, Count, bf1, bf2, bf3;
+//  		HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -227,30 +238,30 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-//	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
-//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
-//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
-//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
-//      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
-//	  HAL_Delay(1);
-	  adc_get_value();
-	   V_CB = voutsense;
-	   V_Bat = vinsense;
-	  Vref = 24;  // Set your reference voltage
-	   Ib = isense;
+//	    	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9,1);
+//	    	  adc_get_value();
+//	    	   V_CB = voutsense;
+//	    	   V_Bat = vinsense;
+//	    	  Vref = 24;  // Set your reference voltage
+//	    	   Ib = isense;
+//
+//	    	  // Control variables
+//
+//
+//	    	  // Update control system
+//	    	  Control_Update(V_CB, V_Bat, Vref, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
+//
+//	    	   //Update PWM duty cycle
+//	    	  mosfet(D);
+//
+//	    	   //Add delay or wait for timer interrupt
+//	    	  delay_ns(500);  // Adjust based on your control frequency
 
-	  // Control variables
 
-
-	  // Update control system
-	  Control_Update(V_CB, V_Bat, Vref, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
-
-	   //Update PWM duty cycle
-	  mosfet(D);
-
-	   //Add delay or wait for timer interrupt
-	  delay_ns(500);  // Adjust based on your control frequency
-
+	  	  data_read_test_eeprom = EEPROM_ReadByte(page_read_test_eeprom, 0);
+	  	  send_data_to_winform(data_read_test_eeprom, 0, 0, 0);
+	  	  page_read_test_eeprom++;
+	  	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -431,7 +442,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00301739;
+  hi2c1.Init.Timing = 0x00305FFF;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -559,6 +570,51 @@ static void MX_TIM1_Init(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 7200-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 1000-1;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief TIM4 Initialization Function
   * @param None
   * @retval None
@@ -577,9 +633,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 5-1;
+  htim4.Init.Prescaler = 1-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 100-1;
+  htim4.Init.Period = 179-1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -712,6 +768,12 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
 
 }
 
