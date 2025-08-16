@@ -1,5 +1,7 @@
 #include "timmer.h"
 #include "at24c08c.h"
+#include "winform.h"
+#include "adc.h"
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
@@ -49,6 +51,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
     else if(htim->Instance == TIM2)
     {
+//    	adc_get_value();
         double is = isense;
         int16_t q = (int16_t)(is * 100.0);      // 12.34 A -> 1234
 
@@ -61,7 +64,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     		page_of_eeprom_to_write_isense = 0;
     	}
     	page_of_eeprom_to_write_isense++;
-//    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
+    	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);
 //    	EEPROM_WriteByte(page_write_test_eeprom, 0, &data_write_test_eeprom, 1);
 //    	page_write_test_eeprom++;
 //    	data_write_test_eeprom++;

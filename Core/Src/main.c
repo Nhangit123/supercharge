@@ -230,7 +230,7 @@ int main(void)
   double Ib;
   double D = 0;
   		double uk_V, uk_Ib, I_SPb, Count, bf1, bf2, bf3;
-//  		HAL_TIM_Base_Start_IT(&htim2);
+  		HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -239,29 +239,29 @@ int main(void)
   {
     /* USER CODE END WHILE */
 //	    	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9,1);
-//	    	  adc_get_value();
-//	    	   V_CB = voutsense;
-//	    	   V_Bat = vinsense;
-//	    	  Vref = 24;  // Set your reference voltage
-//	    	   Ib = isense;
-//
-//	    	  // Control variables
-//
-//
-//	    	  // Update control system
-//	    	  Control_Update(V_CB, V_Bat, Vref, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
-//
-//	    	   //Update PWM duty cycle
-//	    	  mosfet(D);
-//
-//	    	   //Add delay or wait for timer interrupt
-//	    	  delay_ns(500);  // Adjust based on your control frequency
+	    	  adc_get_value();
+	    	   V_CB = voutsense;
+	    	   V_Bat = vinsense;
+	    	  Vref = 24;  // Set your reference voltage
+	    	   Ib = isense;
+
+	    	  // Control variables
 
 
-	  	  data_read_test_eeprom = EEPROM_ReadByte(page_read_test_eeprom, 0);
-	  	  send_data_to_winform(data_read_test_eeprom, 0, 0, 0);
-	  	  page_read_test_eeprom++;
-	  	  HAL_Delay(1000);
+	    	  // Update control system
+	    	  Control_Update(V_CB, V_Bat, Vref, 0, 0, &D, 0, &uk_V, &uk_Ib, 0, 0, 0, 0, 0, 0, 0);
+
+	    	   //Update PWM duty cycle
+	    	  mosfet(D);
+
+	    	   //Add delay or wait for timer interrupt
+	    	  delay_ns(500);  // Adjust based on your control frequency
+
+
+//	  	  data_read_test_eeprom = EEPROM_ReadByte(page_read_test_eeprom, 0);
+//	  	  send_data_to_winform(data_read_test_eeprom, 0, 0, 0);
+//	  	  page_read_test_eeprom++;
+//	  	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
